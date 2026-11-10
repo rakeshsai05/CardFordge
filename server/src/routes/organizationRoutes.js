@@ -1,0 +1,22 @@
+import express from 'express';
+import { protect } from '../middleware/authMiddleware.js';
+import { requireOrganization, requireOrgRoles } from '../middleware/organizationAccess.js';
+import { getWorkspace, updateWorkspace, listDepartments, createDepartment, updateDepartment, listUsers, createUser, updateUser, updateManagedProfile, getOrganizationCategories, updateCategories, getTemplateAssignments, setTemplateAssignment } from '../controllers/organizationController.js';
+
+const router = express.Router();
+router.use(protect, requireOrganization);
+router.get('/', requireOrgRoles('main_admin', 'mid_admin'), getWorkspace);
+router.patch('/', requireOrgRoles('main_admin'), updateWorkspace);
+router.get('/departments', requireOrgRoles('main_admin', 'mid_admin'), listDepartments);
+router.post('/departments', requireOrgRoles('main_admin'), createDepartment);
+router.patch('/departments/:id', requireOrgRoles('main_admin'), updateDepartment);
+router.get('/categories', requireOrgRoles('main_admin', 'mid_admin'), getOrganizationCategories);
+router.put('/categories', requireOrgRoles('main_admin'), updateCategories);
+router.get('/templates', requireOrgRoles('main_admin', 'mid_admin'), getTemplateAssignments);
+router.put('/templates', requireOrgRoles('main_admin'), setTemplateAssignment);
+router.delete('/templates', requireOrgRoles('main_admin'), setTemplateAssignment);
+router.get('/users', requireOrgRoles('main_admin', 'mid_admin'), listUsers);
+router.post('/users', requireOrgRoles('main_admin', 'mid_admin'), createUser);
+router.patch('/users/:id', requireOrgRoles('main_admin'), updateUser);
+router.patch('/users/:id/profile', requireOrgRoles('main_admin', 'mid_admin'), updateManagedProfile);
+export default router;
